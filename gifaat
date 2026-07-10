@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Birthday Surprise For You</title>
+    <style>
+        body {
+            background-color: #ffeef2;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 182, 193, 0.4);
+            max-width: 400px;
+            position: relative;
+            z-index: 10;
+            transition: all 0.5s ease;
+        }
+        h1 {
+            color: #d63384;
+            font-size: 26px;
+            margin-bottom: 30px;
+        }
+        p {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            height: 50px;
+            position: relative;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        #yesBtn {
+            background-color: #4cd137;
+            color: white;
+        }
+        #yesBtn:hover {
+            transform: scale(1.1);
+            background-color: #44bd32;
+        }
+        #noBtn {
+            background-color: #e84118;
+            color: white;
+            position: absolute;
+        }
+        .ring-box {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: float 2s ease-in-out infinite;
+            display: none;
+        }
+        .heart {
+            position: absolute;
+            color: #ff6b81;
+            font-size: 20px;
+            animation: floatUp 4s linear infinite;
+            user-select: none;
+            pointer-events: none;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainBox">
+        <div class="ring-box" id="ringBox">💍</div>
+        <h1 id="mainTitle">Are you ready to let me spoil you for your birthday? 🎂</h1>
+        <p id="subText" style="display: none;">Happy Birthday to the most amazing person in my life. You win every race, and you've completely won my heart.</p>
+        <p id="revealText" style="font-weight: bold; color: #d63384; margin-top: 20px; display: none;">Look up... I have a real surprise waiting for you right now. 🎁</p>
+        
+        <div class="btn-container" id="buttons">
+            <button id="yesBtn" onclick="revealRingGift()">YES!</button>
+            <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">NO</button>
+        </div>
+    </div>
+
+    <script>
+        // Setup initial button positioning
+        const noBtn = document.getElementById('noBtn');
+        noBtn.style.left = '55%';
+
+        // The running away button logic
+        function moveButton() {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40);
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        }
+
+        // The hidden ring reveal transition
+        function revealRingGift() {
+            // Hide the question buttons
+            document.getElementById('buttons').style.display = 'none';
+            
+            // Show the ring element and update texts
+            document.getElementById('ringBox').style.display = 'block';
+            document.getElementById('mainTitle').innerHTML = "I Knew You'd Say Yes! 💖";
+            document.getElementById('subText').style.display = 'block';
+            document.getElementById('revealText').style.display = 'block';
+            
+            // Start raining love hearts animation
+            setInterval(createHeart, 300);
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 5000);
+        }
+    </script>
+</body>
+</html>
