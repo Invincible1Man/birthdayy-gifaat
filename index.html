@@ -22,7 +22,7 @@
             padding: 40px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(255, 182, 193, 0.4);
-            max-width: 400px;
+            max-width: 450px;
             position: relative;
             z-index: 10;
             transition: all 0.5s ease;
@@ -30,7 +30,7 @@
         h1 {
             color: #d63384;
             font-size: 26px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         p {
             color: #555;
@@ -43,6 +43,7 @@
             gap: 20px;
             height: 50px;
             position: relative;
+            margin-top: 20px;
         }
         button {
             padding: 12px 30px;
@@ -53,24 +54,32 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        #yesBtn {
+        .yes-btn {
             background-color: #4cd137;
             color: white;
         }
-        #yesBtn:hover {
+        .yes-btn:hover {
             transform: scale(1.1);
             background-color: #44bd32;
         }
-        #noBtn {
+        .no-btn {
             background-color: #e84118;
             color: white;
             position: absolute;
+        }
+        .food-grid {
+            display: none;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            font-size: 45px;
+            margin: 20px 0;
+            animation: popUp 0.5s ease-out;
         }
         .ring-box {
             font-size: 80px;
             margin-bottom: 20px;
             animation: float 2s ease-in-out infinite;
-            display: none;
+            display: none !important;
         }
         .heart {
             position: absolute;
@@ -84,6 +93,10 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-15px); }
         }
+        @keyframes popUp {
+            0% { transform: scale(0.3); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
         @keyframes floatUp {
             0% { transform: translateY(100vh) scale(0); opacity: 1; }
             100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
@@ -93,55 +106,96 @@
 <body>
 
     <div class="container" id="mainBox">
+        <!-- Part 3: The Ring Box -->
         <div class="ring-box" id="ringBox">💍</div>
-        <h1 id="mainTitle">Are you ready to let me spoil you for your birthday? 🎂</h1>
-        <p id="subText" style="display: none;">Happy Birthday to the most amazing person in my life. You win every race, and you've completely won my heart.</p>
-        <p id="revealText" style="font-weight: bold; color: #d63384; margin-top: 20px; display: none;">Look up... I have a real surprise waiting for you right now. 🎁</p>
         
-        <div class="btn-container" id="buttons">
-            <button id="yesBtn" onclick="revealRingGift()">YES!</button>
-            <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">NO</button>
+        <h1 id="mainTitle">Are you ready to let me spoil you for your birthday? 🎂</h1>
+        
+        <!-- Part 2: The Feast Layout -->
+        <div class="food-grid" id="foodGrid">
+            <div title="Alot of Food">🍔</div>
+            <div title="Alot of Food">🍕</div>
+            <div title="Alot of Food">🍟</div>
+            <div title="Alot of Food">🍗</div>
+            <div title="Fanta Orange">🍊🥤</div>
+            <div title="Mirinda">🍹</div>
+            <div title="Mango Juice">🥭🧃</div>
+            <div title="Birthday Cake">🎂</div>
+        </div>
+
+        <p id="subText" style="display: none;"></p>
+        <p id="revealText" style="font-weight: bold; color: #d63384; margin-top: 20px; display: none;"></p>
+        
+        <!-- ROUND 1 BUTTONS (Food Screen) -->
+        <div class="btn-container" id="round1Buttons">
+            <button class="yes-btn" onclick="revealFoodFeast()">YES!</button>
+            <button class="no-btn" id="noBtn1" onmouseover="moveButton('noBtn1')" onclick="moveButton('noBtn1')">NO</button>
+        </div>
+
+        <!-- ROUND 2 BUTTONS (Ring Screen - Hidden Initially) -->
+        <div class="btn-container" id="round2Buttons" style="display: none;">
+            <button class="yes-btn" onclick="revealFinalRing()">YES!</button>
+            <button class="no-btn" id="noBtn2" onmouseover="moveButton('noBtn2')" onclick="moveButton('noBtn2')">NO</button>
         </div>
     </div>
 
     <script>
-        // Setup initial button positioning
-        const noBtn = document.getElementById('noBtn');
-        noBtn.style.left = '55%';
+        // Set initial horizontal setup for both dodging buttons
+        document.getElementById('noBtn1').style.left = '55%';
+        document.getElementById('noBtn2').style.left = '55%';
 
-        // The running away button logic
-        function moveButton() {
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40);
-            
-            noBtn.style.position = 'fixed';
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
+        // Custom running button function tracking individual buttons
+        function moveButton(buttonId) {
+            const currentBtn = document.getElementById(buttonId);
+            const x = Math.random() * (window.innerWidth - currentBtn.offsetWidth - 40);
+            const y = Math.random() * (window.innerHeight - currentBtn.offsetHeight - 40);
+            currentBtn.style.position = 'fixed';
+            currentBtn.style.left = x + 'px';
+            currentBtn.style.top = y + 'px';
         }
 
-        // The hidden ring reveal transition
-        function revealRingGift() {
-            // Hide the question buttons
-            document.getElementById('buttons').style.display = 'none';
+        // STEP 1: Shows Food and Drinks, Activates Second Question Control
+        function revealFoodFeast() {
+            document.getElementById('round1Buttons').style.display = 'none';
+            document.getElementById('foodGrid').style.display = 'grid';
             
-            // Show the ring element and update texts
-            document.getElementById('ringBox').style.display = 'block';
-            document.getElementById('mainTitle').innerHTML = "I Knew You'd Say Yes! 💖";
+            document.getElementById('mainTitle').innerHTML = "First up... A Birthday Feast! 🥳";
+            document.getElementById('subText').innerHTML = "Tons of your favorite food, ice-cold Fanta, Mirinda, and fresh sweet mango juice are headed your way!<br><br><span style='font-size: 22px; font-weight: bold; color: #d63384;'>Ready for your real birthday gift? 🤫</span>";
             document.getElementById('subText').style.display = 'block';
+            
+            // Bring up the next set of dodging buttons
+            document.getElementById('round2Buttons').style.display = 'flex';
+            
+            window.foodInterval = setInterval(() => createEmoji('🎉'), 300);
+            window.fantaInterval = setInterval(() => createEmoji('🥭'), 500);
+        }
+
+        // STEP 2: Removes Food, Shows the Ring Surprise
+        function revealFinalRing() {
+            clearInterval(window.foodInterval);
+            clearInterval(window.fantaInterval);
+            
+            document.getElementById('foodGrid').style.display = 'none';
+            document.getElementById('round2Buttons').style.display = 'none';
+            
+            document.getElementById('ringBox').setAttribute('style', 'display: block !important');
+            
+            document.getElementById('mainTitle').innerHTML = "I Knew You'd Say Yes! 💖";
+            document.getElementById('subText').innerHTML = "Happy Birthday to the most amazing person in my life. You win every race, and you've completely won my heart.";
+            document.getElementById('revealText').innerHTML = "Look up... I have a real surprise waiting for you right now. 🎁";
             document.getElementById('revealText').style.display = 'block';
             
-            // Start raining love hearts animation
-            setInterval(createHeart, 300);
+            setInterval(() => createEmoji('❤️'), 300);
         }
 
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => { heart.remove(); }, 5000);
+        function createEmoji(symbol) {
+            const emoji = document.createElement('div');
+            emoji.classList.add('heart');
+            emoji.innerHTML = symbol;
+            emoji.style.left = Math.random() * 100 + 'vw';
+            emoji.style.animationDuration = Math.random() * 2 + 3 + 's';
+            document.body.appendChild(emoji);
+            setTimeout(() => { emoji.remove(); }, 5000);
         }
     </script>
 </body>
